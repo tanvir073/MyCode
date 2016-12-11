@@ -15,22 +15,28 @@
 # From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
   
 
-# download data 
-setwd("C:/tanvir/Tutorial/Data Science Specializetion/Getting and Cleaning Data/mycode")
-download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip","data/Dataset.zip")
+## download data 
+setwd("C:/tanvir/Tutorial/")
+##download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip","data/Dataset.zip")
 
 ## load train and test data set
 
-traindata<-read.table("data/UCI HAR Dataset/train/X_train.txt")
+traindatax<-read.table("MyData/UCI HAR Dataset/train/X_train.txt")
+traindatax$Axis='x'
+traindatay<-read.table("MyData/UCI HAR Dataset/train/y_train.txt")
+traindatay$Axis='y'
+traindata<-rbind(traindatax,traindatay)
 traindata$DataType='Train'
 head(traindata,2)
-testdata<-read.table("data/UCI HAR Dataset/test/X_test.txt")
+testdata<-read.table("MyData/UCI HAR Dataset/test/X_test.txt")
 testdata$DataType='Test'
 head(testdata,2)
 
 mergeddata<-rbind(traindata,testdata)
 
 head(mergeddata,2)
+
+dim(traindatay)
 
 
 
