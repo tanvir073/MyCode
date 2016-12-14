@@ -29,13 +29,12 @@ head(Labels)
 ## load train and test data set and merge two data set
 
 traindata<-read.table("MyData/UCI HAR Dataset/train/X_train.txt")
-Lavels<-read.table("MyData/UCI HAR Dataset/train/y_train.txt",col.names = 'Lavels')
+
 traindata$DataType='Train'
 traindata$Lavels=Lavels$Lavels
 head(traindata,2)
 testdata<-read.table("MyData/UCI HAR Dataset/test/X_test.txt")
 testdata$DataType='Test'
-Lavels<-read.table("MyData/UCI HAR Dataset/test/y_test.txt",col.names = 'Lavels')
 testdata$Lavels=Lavels$Lavels
 head(testdata,2)
 
@@ -52,42 +51,38 @@ head(header)
 
 header=gsub("__","_",gsub("__","_",gsub("[-,()]","_",header$V2)))
 
-header[grep("mean_|std_",header)]
-grep("mean_|std_",header)
+mergeddata_seleted_col<-mergeddata[grep("mean_|std_",header)]
 
-mergeddata1=mergeddata
+# Uses descriptive activity names to name the activities in the data set
 
-x='tBodyAcc_mean_X'
-header[x]
-paste('V',1,sep='')
-y=paste('rename(mergeddata1,',x,paste('=V',1,')',sep=''),sep = '')
-y
-eval(y)
-eval(parse(text=y),envir = parent.frame(2))
+Labels_tr<-read.table("MyData/UCI HAR Dataset/train/y_train.txt",col.names = 'Labels_ID')
+Labels_tst<-read.table("MyData/UCI HAR Dataset/test/y_test.txt",col.names = 'Labels_ID')
+Labels=rbind(Labels_tr,Labels_tst)
+Labels_Desc<-read.table("MyData/UCI HAR Dataset/activity_labels.txt",col.names = c('Labels_ID','Labels'))
+Activity=merge(Labels,Labels_Desc)
+mergeddata_seleted_col$Activity=Activity$Labels
 
-head(mergeddata1[1])
+# Appropriately labels the data set with descriptive variable names.
 
-head(rename(mergeddata1,tBodyAcc_mean_X=V1))
+colnames(mergeddata_seleted_col)<- c(header[grep("mean_|std_",header)],"Activity")
 
-head(select(mergeddata1,x=matches("V1")))
+head(mergeddata_seleted_col)
 
-mergeddata1[[paste('V',x,sep='')]]
+# From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
-mergeddata1[,colnames(paste('V',x,sep=''))]
+subject_tr<-read.table("MyData/UCI HAR Dataset/train/subject_train.txt",col.names = 'Subject')
+subject_tst<-read.table("MyData/UCI HAR Dataset/test/subject_test.txt",col.names = 'Subject')
+Subject=rbind(subject_tr,subject_tst)
+mergeddata_seleted_col$Subject=Subject$Subject
 
-mEx<-expression(y)
-eval(mEx)
+remove(Subject)
 
+agg_data<-group_by(mergeddata_seleted_col,Activity,Subject)
 
+dd=summarise_all(agg_data,mean)
+dd1=as.data.frame(dd)
 
-
-
-
-
-
-
-
-
+head(dd1)
 
 
 
