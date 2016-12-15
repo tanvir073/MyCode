@@ -19,25 +19,10 @@
 setwd("C:/tanvir/Tutorial/")
 ##download.file("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip","data/Dataset.zip")
 
-## test area
-
-typeof(Labels)
-str(Labels)
-head(Labels)
-
-
 ## load train and test data set and merge two data set
 
 traindata<-read.table("MyData/UCI HAR Dataset/train/X_train.txt")
-
-traindata$DataType='Train'
-traindata$Lavels=Lavels$Lavels
-head(traindata,2)
 testdata<-read.table("MyData/UCI HAR Dataset/test/X_test.txt")
-testdata$DataType='Test'
-testdata$Lavels=Lavels$Lavels
-head(testdata,2)
-
 mergeddata<-rbind(traindata,testdata)
 
 head(mergeddata,2)
@@ -75,14 +60,12 @@ subject_tst<-read.table("MyData/UCI HAR Dataset/test/subject_test.txt",col.names
 Subject=rbind(subject_tr,subject_tst)
 mergeddata_seleted_col$Subject=Subject$Subject
 
-remove(Subject)
+grouped_data<-group_by(mergeddata_seleted_col,Activity,Subject)
 
-agg_data<-group_by(mergeddata_seleted_col,Activity,Subject)
+tidy_data=summarise_all(grouped_data,mean)
+tidy_data=as.data.frame(tidy_data)
 
-dd=summarise_all(agg_data,mean)
-dd1=as.data.frame(dd)
-
-head(dd1)
+head(tidy_data)
 
 
 
