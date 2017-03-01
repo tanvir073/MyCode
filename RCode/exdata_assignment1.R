@@ -23,6 +23,10 @@ ee=read.csv("MyData/exdata_household_power_consumption/household_power_consumpti
 object.size(ee)
 
 ### read specific amount of data
+
+a=read.csv(pipe('find /v "16/12/2006" C:\\tanvir\\Tutorial\\MyData\\exdata_household_power_consumption\\household_power_consumption.txt'),header = F)
+
+
 ### make all plots
 ### proper legend and axis  
 
