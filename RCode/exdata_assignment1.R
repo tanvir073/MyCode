@@ -13,6 +13,16 @@ outDir<-"MyData/exdata_household_power_consumption"
 unzip(zipF,exdir=outDir)
 
 ### estimate memoroy size in R to load data
+read.csv("MyData/exdata_household_power_consumption/household_power_consumption.txt",sep=';', nrow=10)
+top.size <- object.size(read.csv("MyData/exdata_household_power_consumption/household_power_consumption.txt", nrow=1000))
+txt=system('find /c ";" C:\\tanvir\\Tutorial\\MyData\\exdata_household_power_consumption\\household_power_consumption.txt', intern=T)
+lines <- as.numeric(substr(txt[2],regexpr(': ',txt[2])+2,nchar(txt[2])))
+size.estimate <- lines / 1000 * top.size
 
-read
+ee=read.csv("MyData/exdata_household_power_consumption/household_power_consumption.txt",sep=';')
+object.size(ee)
+
+### read specific amount of data
+### make all plots
+### proper legend and axis  
 
