@@ -19,14 +19,21 @@ txt=system('find /c ";" C:\\tanvir\\Tutorial\\MyData\\exdata_household_power_con
 lines <- as.numeric(substr(txt[2],regexpr(': ',txt[2])+2,nchar(txt[2])))
 size.estimate <- lines / 1000 * top.size
 
-ee=read.csv("MyData/exdata_household_power_consumption/household_power_consumption.txt",sep=';')
+eltConsum=read.csv("MyData/exdata_household_power_consumption/household_power_consumption.txt",sep=';',header = T)
 object.size(ee)
 
 ### read specific amount of data
 
 a=read.csv(pipe('find /v "16/12/2006" C:\\tanvir\\Tutorial\\MyData\\exdata_household_power_consumption\\household_power_consumption.txt'),header = F)
 
+#### data cleaning 
+
+head(eltConsum,5)
+
+eltConsum$DateTime=strptime(paste(eltConsum$Date,eltConsum$Time),"%d/%m/%Y %H:%M:%S")
 
 ### make all plots
+
+
 ### proper legend and axis  
 
