@@ -2,9 +2,11 @@
 
 setwd("C:/tanvir/Tutorial/")
 
-AddData=NULL
-for(i in 1:5){
+date()
+
+for(i in 1:50){
   
+  AddData=NULL
   
   link_page_url=paste("https://bikroy.com/en/ads?page=",i,sep = "")
   link_page_html=read_html(link_page_url)
@@ -31,11 +33,8 @@ for(i in 1:5){
     AddData=rbind(NewData,AddData)
     
   }
-  
+  write.table(x=AddData,file='bikroyweb.csv',sep=',',row.names = F,append = T)
 }
+date()
 
-AddData$Product[AddData$AddUrl=="https://bikroy.com/en/ad/ddim-theke-baaccaa-phottaanr-sbyynkriyy-yntr-for-sale-chittagong-division"]
 
-AddData$AddUrl=="https://bikroy.com/en/ad/ddim-theke-baaccaa-phottaanr-sbyynkriyy-yntr-for-sale-chittagong-division"
-
-write.table(x=AddData,file='bikroyweb.csv',sep=',',row.names = F,append = T)
