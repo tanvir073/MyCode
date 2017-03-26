@@ -53,6 +53,25 @@ for (file in AllFiles) {
 
 write.csv(RefusalRate,"RefusalRate.csv",row.names = F)
 
+### Plot data
+## install.packages("plotly")
+library(plotly)
+## install.packages("rvest")
+
+## library(rvest)
+
+df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv')
+
+CountryURL="https://developers.google.com/public-data/docs/canonical/countries_csv"
+
+CountryHTML=read_html(CountryURL)
+
+CountryTableList=CountryHTML %>% html_nodes(xpath='//*/table[1]') %>% html_table()
+
+CountryTable=CountryTable[[1]]
+
+head(CountryTable,3)
+
 RefusalRate$Year
 
 write(NumberOfPage$metadata,"sample.xml")
