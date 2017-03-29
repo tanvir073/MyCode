@@ -51,16 +51,18 @@ for (file in AllFiles) {
 
 
 
-write.csv(RefusalRate,"RefusalRate.csv",row.names = F)
+## write.csv(RefusalRate,"RefusalRate.csv",row.names = F)
 
 ### Plot data
+## install.packages("RInside")
 ## install.packages("plotly")
+## install.packages("yaml")
 library(plotly)
+library(RInside)
+library(yaml)
 ## install.packages("rvest")
 
 ## library(rvest)
-
-df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_us_cities.csv')
 
 CountryURL="https://developers.google.com/public-data/docs/canonical/countries_csv"
 
@@ -70,13 +72,34 @@ CountryTableList=CountryHTML %>% html_nodes(xpath='//*/table[1]') %>% html_table
 
 CountryTable=CountryTable[[1]]
 
-head(CountryTable,3)
+write.csv(CountryTable,"MyData/USVisaRefusalRate/Country.csv")
 
-RefusalRate$Year
-
-write(NumberOfPage$metadata,"sample.xml")
+CountryList=read.csv("MyData/USVisaRefusalRate/CountryTable.csv")
 
 
+MRefusalRate=merge(RefusalRate,CountryList[,c(1:5)])
+
+head(MRefusalRate,3)
+
+g <- list(
+  scope = 'world',
+  showland = TRUE,
+  landcolor = toRGB("gray95")
+)
+
+Yr="2014"
+
+YMRefusalRate=MRefusalRate[MRefusalRate$Year==Yr,]
+
+plot_geo(YMRefusalRate, lat = ~Latitude, lon = ~Longitude) %>%
+  add_markers(
+    text = ~paste(Country, paste("Refusal Rate:", Rate), sep = "<br />"),
+    color = ~Rate, symbol = I("square"), size = I(8), hoverinfo = "text"
+  ) %>%
+  colorbar(title = paste("USA Visa Refusal Rate",paste("Year-",Yr), sep = "<br />")) %>%
+  layout(
+    title = 'USA Visa Refusal Rate Per Country<br />(Hover for Rate)', geo = g
+  )
 
 
 
