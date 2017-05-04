@@ -1,4 +1,4 @@
-### set your directory where you save your file
+### set your directory where you wand to save your file
 setwd("C:/tanvir/Tutorial/")
 
 ## install and load necessary packages
