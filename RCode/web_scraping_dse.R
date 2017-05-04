@@ -1,29 +1,41 @@
-
+### set your directory where you save your file
 setwd("C:/tanvir/Tutorial/")
-# library(rvest)
+
+## install and load necessary packages
+install.packages("rvest")
+install.packages("stringr")
+library(rvest)
 library(stringr)
 
-AttribList<-c("Total No. of Outstanding Securities",)
+#### get DSE company listing page
 
 DscCompURL="http://www.dsebd.org/company%20listing.php"
 
 DscCompHTML=read_html(DscCompURL)
 
-## get all web links
+## get all web links from company listing page
+
 Links=DscCompHTML %>% html_nodes("table td a")%>% html_attr(name = 'href')
-## subset links for company links
+
+## subseting links for company links
 Links=Links[grep("displayCompany.php",Links)]
 
-length(Links)
+## blank data frame object to store company data
 
 datafrm=data.frame()
 
-for(l in 406:length(Links))
+## run loop for all company profile pages
+
+for(l in 1:length(Links))
 {
   companyURL=paste("http://www.dsebd.org/",Links[l],sep = "")
   
+  ## print company url
   print(companyURL)
+  ## get company profile page
   companyHTML=read_html(companyURL)
+  
+  ## retrive data
   
   Trading_Code=companyHTML %>% html_nodes(xpath="//b[contains(text(),'Trading Code')]/..")%>% html_text()
   
@@ -46,6 +58,8 @@ for(l in 406:length(Links))
   }
   
 }
+
+## write csv file
 
 write.table(x=datafrm,file='DSE.csv',sep=',',row.names = F,append = T)
 
