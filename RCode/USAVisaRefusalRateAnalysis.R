@@ -10,6 +10,7 @@ setwd("C:/tanvir/Tutorial/")
 library("pdftools")
 
 library(stringr)
+library(dplyr)
 
 #### read data from PDF
 
@@ -49,9 +50,11 @@ for (file in AllFiles) {
   
 }
 
+## RefusalRate$Country=toupper(RefusalRate$Country)
 
+write.csv(unique(toupper(RefusalRate$Country)),"MyData/USVisaRefusalRate/OnlyCountry.csv",row.names = F)
 
-## write.csv(RefusalRate,"RefusalRate.csv",row.names = F)
+## write.csv(RefusalRate,"MyData/USVisaRefusalRate/RefusalRate.csv",row.names = F)
 
 ### Plot data
 ## install.packages("RInside")
@@ -60,6 +63,7 @@ for (file in AllFiles) {
 library(plotly)
 library(RInside)
 library(yaml)
+
 ## install.packages("rvest")
 
 ## library(rvest)
@@ -70,16 +74,23 @@ CountryHTML=read_html(CountryURL)
 
 CountryTableList=CountryHTML %>% html_nodes(xpath='//*/table[1]') %>% html_table()
 
-CountryTable=CountryTable[[1]]
+CountryTable=CountryTableList[[1]]
 
 write.csv(CountryTable,"MyData/USVisaRefusalRate/Country.csv")
 
 CountryList=read.csv("MyData/USVisaRefusalRate/CountryTable.csv")
 
+head(CountryList)
+tail(CountryList)
+
+CountryList$Country[CountryList$Country=='']=CountryList$Country_name[CountryList$Country=='']
 
 MRefusalRate=merge(RefusalRate,CountryList[,c(1:5)])
 
+tail(MRefusalRate,3)
 head(MRefusalRate,3)
+
+write.csv(MRefusalRate,"MyData/USVisaRefusalRate/MRefusalRate.csv")
 
 g <- list(
   scope = 'world',
