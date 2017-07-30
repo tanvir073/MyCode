@@ -6,6 +6,8 @@ library(ggplot2)
 
 ##### scattter plot
 
+str(mpg)
+
 qplot(displ,hwy,data=mpg)
 
 ##### scattter plot seperate by color for sub group
@@ -59,9 +61,23 @@ g+geom_point(aes(color=cyl),size=4,alpha=1/2)+facet_grid(drv~.)+labs(color="Cyli
 g+geom_point(aes(color=cyl),size=4,alpha=1/2)+facet_grid(drv~.)+labs(color="Cylinders")+theme_dark()
 g+geom_point(aes(color=cyl),size=4,alpha=1/2)+facet_grid(drv~.)+labs(color="Cylinders")+theme_linedraw(base_family="Times")
              
-head(mpg)
+#### Axis Limits
+
+#using basic plot
+testdat<-data.frame(x=1:100,y=rnorm(100))
+testdat[50,2]<-100
+plot(testdat$x,testdat$y,type = "l",ylim = c(-3,3))
+
+# using ggplot
+g<-ggplot(testdat,aes(x=x,y=y))
+g+geom_line()
+g+geom_line()+ylim(-3,3)
+g+geom_line()+coord_cartesian(ylim = c(-3,3))
 
 
+str(mpg)
 
+cutpoints=quantile(mpg$hwy,seq(0,1,length=4),na.rm = T)
+cut(mpg$hwy,cutpoints)
 
 

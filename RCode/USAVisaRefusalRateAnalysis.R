@@ -56,6 +56,12 @@ write.csv(unique(toupper(RefusalRate$Country)),"MyData/USVisaRefusalRate/OnlyCou
 
 ## write.csv(RefusalRate,"MyData/USVisaRefusalRate/RefusalRate.csv",row.names = F)
 
+## RefusalRate=read.csv("MyData/USVisaRefusalRate/RefusalRate.csv")
+
+tail(RefusalRate,3)
+
+ISOMapping=read.csv("MyData/USVisaRefusalRate/ISOMapping.csv")
+
 ### Plot data
 ## install.packages("RInside")
 ## install.packages("plotly")
@@ -78,9 +84,9 @@ CountryTable=CountryTableList[[1]]
 
 write.csv(CountryTable,"MyData/USVisaRefusalRate/Country.csv")
 
-CountryList=read.csv("MyData/USVisaRefusalRate/CountryTable.csv")
+CountryPosition=read.csv("MyData/USVisaRefusalRate/Country.csv")
 
-head(CountryList)
+head(CountryPosition)
 tail(CountryList)
 
 CountryList$Country[CountryList$Country=='']=CountryList$Country_name[CountryList$Country=='']
@@ -89,8 +95,20 @@ MRefusalRate=merge(RefusalRate,CountryList[,c(1:5)])
 
 tail(MRefusalRate,3)
 head(MRefusalRate,3)
+head(ISOMapping)
 
-write.csv(MRefusalRate,"MyData/USVisaRefusalRate/MRefusalRate.csv")
+head(RefusalRate)
+head(CountryPosition)
+head(Country)
+
+ISOMapping=rename(ISOMapping,Country=VCountryName)
+
+MRefusalRate=select(merge(merge(RefusalRate,ISOMapping),CountryPosition,by="Country_Code"),Country,Country_Code,Country_Code3,latitude,longitude,Year,Rate)
+
+## write.csv(MRefusalRate,"MyData/USVisaRefusalRate/MRefusalRate.csv")
+
+
+## show in the map
 
 g <- list(
   scope = 'world',
@@ -102,15 +120,38 @@ Yr="2014"
 
 YMRefusalRate=MRefusalRate[MRefusalRate$Year==Yr,]
 
-plot_geo(YMRefusalRate, lat = ~Latitude, lon = ~Longitude) %>%
+YMRefusalRate$longitude
+
+plot_geo(YMRefusalRate, lat = ~latitude, lon = ~longitude) %>%
   add_markers(
     text = ~paste(Country, paste("Refusal Rate:", Rate), sep = "<br />"),
-    color = ~Rate, symbol = I("square"), size = I(8), hoverinfo = "text"
+    color = ~Rate, symbol = I("circle"), size = I(8), hoverinfo = "text"
   ) %>%
   colorbar(title = paste("USA Visa Refusal Rate",paste("Year-",Yr), sep = "<br />")) %>%
   layout(
     title = 'USA Visa Refusal Rate Per Country<br />(Hover for Rate)', geo = g
   )
 
+## install.packages("reshape")
+
+library(reshape)
+
+EduRate=read.csv("MyData/USVisaRefusalRate/World_Bank_Education.csv")
+
+head(EduRate,3)
+head(MRefusalRate,3)
+str(MRefusalRate)
+
+EduRate=melt(EduRate,id=c("Country.Name","Country.Code","Indicator.Name","Indicator.Code"))
 
 
+
+EduRate=rename(EduRate,c(variable="Year",value="ERate",Country.Name="Country_Name",Country.Code="Country_Code3"))
+
+
+EduRate$Year=as.integer(sub("X","",EduRate$Year))
+
+
+select(merge(MRefusalRate,EduRate,by = c("Country_Code3","Year")))
+
+head(merge(MRefusalRate,EduRate,by = c("Country_Code3","Year")),3)
