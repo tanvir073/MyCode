@@ -78,3 +78,5 @@ image(t(dataMatrix)[,order(kmeanobj$cluster)],yaxt='n')
 
 t(dataMatrix)[,order(kmeanobj$cluster)]
 
+
+
