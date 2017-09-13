@@ -94,11 +94,6 @@ for (ini in seq(from=723103,to=722953,by = -1)){
   
 }
 
-
-Job_detail_html %>%  f_html_xnodes(html_xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "edu_req", " " ))][2]')%>% f_html_node("ul")%>% html_nodes("li")%>%html_text
-
-Job_detail_html %>%  f_html_xnodes(html_xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "edu_req", " " ))][2]')
-
 Base_Info_Total
 Summr_Info_Total
 Job_Des_Total
@@ -109,7 +104,7 @@ Salary_Rng_Total
 Other_Ben_Total
 Com_Info_Total
 
-is
+
 
 
 
