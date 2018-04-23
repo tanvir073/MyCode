@@ -1,0 +1,29 @@
+
+library(RSelenium)
+library(wdman)
+library(XML)
+
+site <-"https://weedmaps.com/dispensaries/in/united-states/california"
+
+ 
+
+rsDriver(browser = "firefox")
+
+#pDrv <- phantomjs(port = 4444L)#phantomjs(port = 4567L)
+remDrv <- remoteDriver(remoteServerAddr = "localhost" 
+                       , port = 4567L
+                       , browserName = "firefox"
+)
+remDrv$open() 
+
+remDrv$navigate(site)
+
+elem <- remDrv$findElements(using="class", value="multi-map-subregions")
+urllist=NULL
+for(i in 219:length(elem)){
+  elemtxt <- elem[[i]]$getElementAttribute("outerHTML")[[1]]
+  elemxml <- htmlTreeParse(elemtxt, useInternalNodes=T)
+  fundList <- unlist(xpathApply(elemxml, '//a', xmlGetAttr, 'href'))
+  urllist=c(urllist,fundList)
+  
+}
