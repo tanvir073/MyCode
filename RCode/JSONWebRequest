@@ -1,0 +1,97 @@
+library(XML)
+library(dplyr)
+library(httr)
+library(rvest)
+
+
+################### leve data ################################
+numberOfRow=6550
+
+ReqURL= "#########################"
+RefererURL="#########################"
+HostServer = "#########################"
+OriginServer = "#########################"
+
+Leve <- POST(ReqURL,
+          authenticate(":", ":", "ntlm"),
+          query = list(FromDate="01 Jan 2018", ToDate="25 Apr 2018",nd="1524628926883",rows=numberOfRow,page="1",sidx="ResourceId",sord="desc"),
+          user_agent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"),
+          add_headers(`Referer`=RefererURL,
+                      Connection = "keep-alive",
+                      Host = HostServer,
+                      Accept = "application/json, text/javascript, */*; q=0.01",
+                      `Accept-Encoding` = "gzip, deflate",
+                      Origin = OriginServer,
+                      `X-Requested-With` = "XMLHttpRequest",
+                      `Content-Type` = "application/x-www-form-urlencoded",
+                      `Accept-Language`= "en-US,en;q=0.9,bn;q=0.8"))
+content(Leve, "text")
+jsonlite::fromJSON(content(Leve, "text"))
+
+leaveData=jsonlite::fromJSON(content(Leve, "text"))$rows$cell
+
+getwd()
+
+length(leaveData)
+str(leaveData)
+
+LeveDataTbl=data.frame(matrix(unlist(leaveData), nrow=numberOfRow, byrow=T),stringsAsFactors=FALSE)
+colnames(LeveDataTbl)=c("LevelId","EmployId","EmployName","LevelType","StartDate","EndDate","Days","Status")
+
+head(LeveDataTbl)
+
+write.table(LeveDataTbl,"leaveData.csv",sep = "|",row.names = F)
+
+###########Resource data##################
+
+numberOfResource=185
+ReqURL1="#########################"
+RefererURL1="#########################"
+Resource <- POST(ReqURL1,
+             authenticate(":", ":", "ntlm"),
+             query = list(nd="1524633131903",rows=numberOfResource,page="1",sidx="Name",sord="asc"),
+             user_agent("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"),
+             add_headers(`Referer`=RefererURL1,
+                         Connection = "keep-alive",
+                         Host = HostServer,
+                         Accept = "application/json, text/javascript, */*; q=0.01",
+                         `Accept-Encoding` = "gzip, deflate",
+                         Origin = OriginServer,
+                         `X-Requested-With` = "XMLHttpRequest",
+                         `Content-Type` = "application/x-www-form-urlencoded",
+                         `Accept-Language`= "en-US,en;q=0.9,bn;q=0.8"))
+
+
+content(Resource, "text")
+jsonlite::fromJSON(content(Resource, "text"))
+
+ResourceData=jsonlite::fromJSON(content(Resource, "text"))$rows$cell
+
+ResourceDataTbl=data.frame(matrix(unlist(ResourceData), nrow=numberOfResource, byrow=T),stringsAsFactors=FALSE)
+
+head(ResourceDataTbl)
+colnames(ResourceDataTbl)=c("EmployId","EmployName","Team","ResourceManager","LineManager","Designation","ContactNumber","EmailId","JoingDate","DateOfBirth","Sex","CAddress","PAddress","BloodGroup","UserId","Rule","Status1","Status2")
+
+ResourceDataTbl
+
+write.table(ResourceDataTbl,"ResourceDataTbl.csv",sep = "|",row.names = F)
+
+
+##############
+
+colnames(LeveDataTbl)
+colnames(ResourceDataTbl)
+
+head(ResourceDataTbl[c(1,3,5,6,11,14)])
+
+LeveDataFinal=merge(x=ResourceDataTbl[c(1,3,5,6,11,14)],y=LeveDataTbl,By="EmployId")
+
+head(LeveDataFinal)
+
+###### team analysis ####
+
+
+
+
+
+
