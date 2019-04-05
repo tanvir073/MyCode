@@ -25,6 +25,7 @@ pageCount=30
 geo="&geocode=-40.785091,-73.968285,30km"
 
 userInfo=NULL
+userInfo1=NULL
 
 for(i in 1:pageCount)
 {
